@@ -5,6 +5,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"telegram-mirror-bot/utils/aria"
@@ -68,9 +69,16 @@ func Mirror(ctx *ext.Context) error {
 			if err != nil {
 				log.Println(err)
 			}
+
+
+			if err := os.Remove(st.Files[0].Path); err != nil {
+				log.Println(err)
+			}
+
 		} else {
 			folderName := strings.Split(basePath, string(filepath.Separator))[1]
-			folder, err := dryve.UploadFolder(fmt.Sprintf("%s%s%s", st.Dir, string(filepath.Separator), folderName))
+			folderPath := fmt.Sprintf("%s%s%s", st.Dir, string(filepath.Separator), folderName)
+			folder, err := dryve.UploadFolder(folderPath)
 
 			if err != nil {
 				_, _ = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
@@ -78,6 +86,10 @@ func Mirror(ctx *ext.Context) error {
 
 			_, err = ctx.EffectiveMessage.Reply(bot, dryve.ParseMediaToUsableFormat(*folder, true), nil)
 			if err != nil {
+				log.Println(err)
+			}
+
+			if err := os.RemoveAll(folderPath); err != nil {
 				log.Println(err)
 			}
 		}
