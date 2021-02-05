@@ -22,8 +22,8 @@ func (tmi *TelegramMirrorInfo) ParseStatus(rpc rpc.StatusInfo) {
 	tmi.Speed = BytesToHumanReadable(rpc.DownloadSpeed, true)
 	tmi.ETA = CalculateETA(rpc)
 
-	if rpc.Files[0].Path == "" {
-		tmi.FileName = "..."
+	if rpc.Files[0].Path == "" || (strings.Contains(rpc.Files[0].Path, "METADATA")){
+		tmi.FileName = "Downloading"
 		return
 	}
 
