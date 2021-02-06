@@ -24,6 +24,8 @@ func ListFiles(ctx *ext.Context) error {
 		if err != nil {
 			return err
 		}
+
+		return err
 	}
 
 	if len(files) == 0 {
@@ -31,6 +33,8 @@ func ListFiles(ctx *ext.Context) error {
 		if err != nil {
 			log.Println(err)
 		}
+
+		return err
 	}
 
 	var finMessage string
