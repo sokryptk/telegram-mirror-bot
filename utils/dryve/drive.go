@@ -133,7 +133,7 @@ func List(query string) ([]*drive.File, error) {
 		SupportsTeamDrives(true).
 		OrderBy("name").
 		PageSize(10).
-		Q(fmt.Sprintf("name contains '%s'", query)).
+		Q(fmt.Sprintf("name contains '%s' and parents in '%s'", query, config.C.Root)).
 		Do()
 
 	if err != nil{
