@@ -136,6 +136,10 @@ func CalculateETA(rpc rpc.StatusInfo) string {
 	return SecondsToHumanReadable(eta)
 }
 
-func ConvertLinks(name string, link string, size string) string {
-	return fmt.Sprintf("<a href='%s'>%s</a> (%s)", link, name, size)
+func ConvertLinks(name string, link string, size... string) string {
+	if len(size) == 0 {
+		return fmt.Sprintf("<a href='%s'>%s</a> (folder)", link, name)
+	}
+
+	return fmt.Sprintf("<a href='%s'>%s</a> (%s)", link, name, size[0])
 }

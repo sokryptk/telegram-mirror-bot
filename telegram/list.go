@@ -25,7 +25,13 @@ func ListFiles(ctx *ext.Context) error {
 
 	var finMessage string
 	for _, f := range files {
-		finMessage += parse.ConvertLinks(f.Name, dryve.ParseMediaToUsableFormat(*f, f.MimeType == dryve.FolderMimeType), parse.BytesToHumanReadable(strconv.Itoa(int(f.Size))))
+		//Check if folder or file and adjust accordingly
+		if f.MimeType == dryve.FolderMimeType {
+			finMessage += parse.ConvertLinks(f.Name, dryve.ParseMediaToUsableFormat(*f, true))
+		} else {
+			finMessage += parse.ConvertLinks(f.Name, dryve.ParseMediaToUsableFormat(*f, false), parse.BytesToHumanReadable(strconv.Itoa(int(f.Size))))
+		}
+
 		// Add a newLine after every link
 		finMessage += "\n"
 	}

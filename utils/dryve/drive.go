@@ -128,7 +128,7 @@ func UploadFolder(folderPath string) (*drive.File, error) {
 
 func List(query string) ([]*drive.File, error) {
 	fileList, err := S.Files.List().
-		Fields("files(id, name, size)").
+		Fields("files(id, name, size, mimeType)").
 		IncludeTeamDriveItems(true).
 		SupportsTeamDrives(true).
 		Corpora("drive").
