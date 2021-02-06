@@ -40,7 +40,10 @@ func Mirror(ctx *ext.Context) error {
 
 			switch si.Status {
 			case ariaStatus.ACTIVE:
-				_, _ = m.EditText(bot, fmt.Sprintf("%s \n %s of %s at %s \n ETA : %s", tmi.FileName, tmi.Completed, tmi.Total, tmi.Speed, tmi.ETA), nil)
+				_, err := m.EditText(bot, tmi.FormatInfo(), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+				if err != nil {
+					log.Println(err)
+				}
 				time.Sleep(2 * time.Second)
 			case ariaStatus.COMPLETE:
 				//Probably a magnet
