@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"telegram-mirror-bot/utils/aria"
 	"telegram-mirror-bot/utils/aria/ariaStatus"
@@ -68,7 +69,7 @@ func Mirror(ctx *ext.Context) error {
 				_, err = m.EditText(bot, err.Error(), nil)
 			}
 
-			parsedLink := parse.ConvertLinks(filepath.Base(st.Files[0].Path), dryve.ParseMediaToUsableFormat(*f))
+			parsedLink := parse.ConvertLinks(filepath.Base(st.Files[0].Path), dryve.ParseMediaToUsableFormat(*f), parse.BytesToHumanReadable(strconv.Itoa(int(f.Size))))
 			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
@@ -88,7 +89,7 @@ func Mirror(ctx *ext.Context) error {
 				_, _ = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
 			}
 
-			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true))
+			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true), parse.BytesToHumanReadable(strconv.Itoa(int(folder.Size))))
 			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
