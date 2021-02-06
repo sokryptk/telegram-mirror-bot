@@ -125,3 +125,20 @@ func UploadFolder(folderPath string) (*drive.File, error) {
 
 	return parentFolder, err
 }
+
+func List(query string) ([]*drive.File, error) {
+	fileList, err := S.Files.List().
+		Fields("files(id, name, size)").
+		IncludeTeamDriveItems(true).
+		SupportsTeamDrives(true).
+		OrderBy("name").
+		PageSize(10).
+		Q(fmt.Sprintf("name contains '%s'", query)).
+		Do()
+
+	if err != nil{
+		return nil, err
+	}
+
+	return fileList.Files, nil
+}

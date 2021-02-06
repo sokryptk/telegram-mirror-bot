@@ -19,6 +19,7 @@ func main() {
 	dispatcher := updater.Dispatcher
 
 	dispatcher.AddHandler(handlers.NewCommand("mirror", telegram.Mirror))
+	dispatcher.AddHandler(handlers.NewCommand("list", telegram.ListFiles))
 
 	if err := updater.StartPolling(b, &ext.PollingOpts{Clean: true}); err != nil {
 		log.Fatal(err)
