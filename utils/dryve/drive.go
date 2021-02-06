@@ -131,6 +131,8 @@ func List(query string) ([]*drive.File, error) {
 		Fields("files(id, name, size)").
 		IncludeTeamDriveItems(true).
 		SupportsTeamDrives(true).
+		Corpora("drive").
+		DriveId(config.C.Root).
 		OrderBy("name").
 		PageSize(10).
 		Q(fmt.Sprintf("name contains '%s'", query)).
