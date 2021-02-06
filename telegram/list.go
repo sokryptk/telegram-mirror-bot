@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"fmt"
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"log"
@@ -20,6 +21,13 @@ func ListFiles(ctx *ext.Context) error {
 		_, err = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
 		if err != nil {
 			return err
+		}
+	}
+
+	if len(files) == 0 {
+		_, err := ctx.EffectiveMessage.Reply(ctx.Bot, fmt.Sprintf("No results found for %s", args[1]), nil)
+		if err != nil {
+			log.Println(err)
 		}
 	}
 
