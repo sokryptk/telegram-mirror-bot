@@ -6,6 +6,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"log"
 	"strconv"
+	"strings"
 	"telegram-mirror-bot/utils/dryve"
 	"telegram-mirror-bot/utils/parse"
 )
@@ -16,7 +17,8 @@ func ListFiles(ctx *ext.Context) error {
 		return nil
 	}
 
-	files, err := dryve.List(args[1])
+	query := strings.Join(args[1:], " ")
+	files, err := dryve.List(query)
 	if err != nil {
 		_, err = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
 		if err != nil {
@@ -25,7 +27,7 @@ func ListFiles(ctx *ext.Context) error {
 	}
 
 	if len(files) == 0 {
-		_, err := ctx.EffectiveMessage.Reply(ctx.Bot, fmt.Sprintf("No results found for %s", args[1]), nil)
+		_, err := ctx.EffectiveMessage.Reply(ctx.Bot, fmt.Sprintf("No results found for %s", query), nil)
 		if err != nil {
 			log.Println(err)
 		}
