@@ -135,3 +135,7 @@ func CalculateETA(rpc rpc.StatusInfo) string {
 
 	return SecondsToHumanReadable(eta)
 }
+
+func ConvertLinks(name string, link string) string {
+	return fmt.Sprintf("<a href='%s'>%s</a>", link, name)
+}

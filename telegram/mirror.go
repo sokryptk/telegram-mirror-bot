@@ -65,10 +65,11 @@ func Mirror(ctx *ext.Context) error {
 		if filepath.Dir(basePath) == "." {
 			f, err := dryve.UploadFile(st.Files[0].Path)
 			if err != nil {
-				_, err = ctx.EffectiveMessage.Reply(bot, err.Error(), nil)
+				_, err = m.EditText(bot, err.Error(), nil)
 			}
 
-			_, err = ctx.EffectiveMessage.Reply(bot, dryve.ParseMediaToUsableFormat(*f), nil)
+			parsedLink := parse.ConvertLinks(filepath.Base(st.Files[0].Path), dryve.ParseMediaToUsableFormat(*f))
+			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
 			}
@@ -87,7 +88,8 @@ func Mirror(ctx *ext.Context) error {
 				_, _ = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
 			}
 
-			_, err = ctx.EffectiveMessage.Reply(bot, dryve.ParseMediaToUsableFormat(*folder, true), nil)
+			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true))
+			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
 			}
