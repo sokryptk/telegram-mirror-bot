@@ -83,9 +83,9 @@ func BytesToHumanReadable(bytes string, speed ...bool) (hrf string) {
 
 	switch {
 	case bytesInt > (2 << 19):
-		hrf = fmt.Sprintf("%dmb", bytesInt/(2<<19))
+		hrf = fmt.Sprintf("%.1fmb", float64(bytesInt)/(2<<19))
 	case bytesInt > (2 << 9):
-		hrf = fmt.Sprintf("%dkb", bytesInt/(2<<9))
+		hrf = fmt.Sprintf("%.1fkb", float64(bytesInt)/(2<<9))
 	default:
 		hrf = fmt.Sprintf("%db", bytesInt)
 	}
