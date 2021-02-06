@@ -10,3 +10,13 @@ func GetStatus(gid string) (si rpc.StatusInfo) {
 	si, _ = client.TellStatus(gid)
 	return
 }
+
+func Cancel(gid string) error {
+	_, err := client.Remove(gid)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

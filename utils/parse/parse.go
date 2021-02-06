@@ -70,11 +70,11 @@ func CreateProgressBar(percentage float64) string {
 	return finalStr
 }
 
-func (tmi TelegramMirrorInfo) FormatInfo() string {
+func (tmi TelegramMirrorInfo) FormatInfo(gid string) string {
 	progressBar := CreateProgressBar(tmi.Percentage)
 	return fmt.Sprintf(
-		"<code>%s - %.1f%%\n%s\n%s of %s at %s\nETA : %s</code>",
-		progressBar , tmi.Percentage, tmi.FileName, tmi.Completed, tmi.Total, tmi.Speed, tmi.ETA,
+		"<code>%s</code> - %.1f%%\n%s\n%s of %s at %s\nETA : %s\nGID : <code>%s</code>",
+		progressBar , tmi.Percentage, tmi.FileName, tmi.Completed, tmi.Total, tmi.Speed, tmi.ETA, gid,
 	)
 }
 

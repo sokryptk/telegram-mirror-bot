@@ -4,6 +4,7 @@ import "fmt"
 
 const (
 	NoUriToDownload = "No URI Found to Download"
+	NoGidFound = "No such GID was found"
 )
 
 

@@ -41,7 +41,7 @@ func Mirror(ctx *ext.Context) error {
 
 			switch si.Status {
 			case ariaStatus.ACTIVE:
-				_, err := m.EditText(bot, tmi.FormatInfo(), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+				_, err := m.EditText(bot, tmi.FormatInfo(si.Gid), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
 				if err != nil {
 					log.Println(err)
 				}
@@ -55,6 +55,34 @@ func Mirror(ctx *ext.Context) error {
 
 				_, _ = m.EditText(bot, fmt.Sprintf("Uploading %s", tmi.FileName), nil)
 				break DownloadLoop
+			case ariaStatus.REMOVED:
+				_, err := ctx.EffectiveMessage.Reply(ctx.Bot, "Download was cancelled", nil)
+				if err != nil {
+					log.Println(err)
+				}
+
+				_, err = m.Delete(ctx.Bot)
+				if err != nil {
+					log.Println(err)
+				}
+
+				//Cleanup
+				basePath := strings.Replace(si.Files[0].Path, fmt.Sprintf("%s/", si.Dir), "", 1)
+				if filepath.Dir(basePath) == "." {
+					if err := os.Remove(si.Files[0].Path); err != nil {
+						log.Println(err)
+					}
+				} else {
+					folderName := strings.Split(basePath, string(filepath.Separator))[1]
+					folderPath := fmt.Sprintf("%s%s%s", si.Dir, string(filepath.Separator), folderName)
+
+					if err := os.RemoveAll(folderPath); err != nil {
+						log.Println(err)
+					}
+				}
+				//Cleanup end
+
+				return
 			}
 		}
 
