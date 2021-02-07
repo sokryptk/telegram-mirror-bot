@@ -5,7 +5,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"log"
 	"strings"
-	"telegram-mirror-bot/utils/aria"
+	"telegram-mirror-bot/aria"
 	"telegram-mirror-bot/utils/erst"
 )
 

@@ -7,7 +7,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"telegram-mirror-bot/utils/dryve"
+	"telegram-mirror-bot/dryve"
 	"telegram-mirror-bot/utils/parse"
 )
 

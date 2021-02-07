@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"telegram-mirror-bot/utils/aria/ariaStatus"
+	"telegram-mirror-bot/aria/ariaStatus"
 	"telegram-mirror-bot/utils/parse"
 )
 

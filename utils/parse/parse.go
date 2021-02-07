@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"telegram-mirror-bot/utils/aria/ariaStatus"
+	"telegram-mirror-bot/aria/ariaStatus"
 )
 
 type TelegramMirrorInfo struct {
