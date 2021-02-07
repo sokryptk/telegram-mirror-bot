@@ -51,6 +51,8 @@ func Mirror(ctx *ext.Context) error {
 			case ariaStatus.COMPLETE:
 				//Probably a magnet
 				if len(si.FollowedBy) > 0 {
+					// This would remove the now done metadata/torrent
+					cache.Set(ctx.EffectiveChat.Id, parse.TelegramMirrorInfo{Gid: gid, Status: ariaStatus.DONE})
 					gid = si.FollowedBy[0]
 					continue
 				}
