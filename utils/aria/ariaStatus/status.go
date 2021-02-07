@@ -5,5 +5,6 @@ const (
 	WAITING = "waiting"
 	PAUSED = "paused"
 	COMPLETE = "complete"
+	DONE = "done"
 	REMOVED = "removed"
 )

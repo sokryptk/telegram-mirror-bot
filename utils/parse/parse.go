@@ -7,9 +7,12 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"telegram-mirror-bot/utils/aria/ariaStatus"
 )
 
 type TelegramMirrorInfo struct {
+	Gid        string  `json:"gid"`
+	Status     string  `json:"status"`
 	Completed  string  `json:"completed"`
 	Total      string  `json:"total"`
 	Percentage float64 `json:"percentage"`
@@ -19,6 +22,8 @@ type TelegramMirrorInfo struct {
 }
 
 func (tmi *TelegramMirrorInfo) ParseStatus(rpc rpc.StatusInfo) {
+	tmi.Gid = rpc.Gid
+	tmi.Status = rpc.Status
 	tmi.Completed = BytesToHumanReadable(rpc.CompletedLength)
 	tmi.Total = BytesToHumanReadable(rpc.TotalLength)
 	tmi.Percentage = CalculatePercentage(rpc.TotalLength, rpc.CompletedLength)
@@ -70,11 +75,15 @@ func CreateProgressBar(percentage float64) string {
 	return finalStr
 }
 
-func (tmi TelegramMirrorInfo) FormatInfo(gid string) string {
+func (tmi TelegramMirrorInfo) formatInfo() string {
+	if tmi.Status == ariaStatus.COMPLETE {
+		return fmt.Sprintf("Uploading: %s", tmi.FileName)
+	}
+
 	progressBar := CreateProgressBar(tmi.Percentage)
 	return fmt.Sprintf(
 		"<code>%s</code> - %.1f%%\n%s\n%s of %s at %s\nETA : %s\nGID : <code>%s</code>",
-		progressBar , tmi.Percentage, tmi.FileName, tmi.Completed, tmi.Total, tmi.Speed, tmi.ETA, gid,
+		progressBar, tmi.Percentage, tmi.FileName, tmi.Completed, tmi.Total, tmi.Speed, tmi.ETA, tmi.Gid,
 	)
 }
 
@@ -136,10 +145,20 @@ func CalculateETA(rpc rpc.StatusInfo) string {
 	return SecondsToHumanReadable(eta)
 }
 
-func ConvertLinks(name string, link string, size... string) string {
+func ConvertLinks(name string, link string, size ...string) string {
 	if len(size) == 0 {
 		return fmt.Sprintf("<a href='%s'>%s</a> (folder)", link, name)
 	}
 
 	return fmt.Sprintf("<a href='%s'>%s</a> (%s)", link, name, size[0])
+}
+
+func Format(tmis []TelegramMirrorInfo) string {
+	var finMessage string
+	for _, tmi := range tmis {
+		finMessage += tmi.formatInfo()
+		finMessage += "\n\n"
+	}
+
+	return finMessage
 }

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"telegram-mirror-bot/cache"
 	"telegram-mirror-bot/utils/aria"
 	"telegram-mirror-bot/utils/aria/ariaStatus"
 	"telegram-mirror-bot/utils/dryve"
@@ -38,10 +39,11 @@ func Mirror(ctx *ext.Context) error {
 			si := aria.GetStatus(gid)
 			tmi := parse.TelegramMirrorInfo{}
 			tmi.ParseStatus(si)
+			chatTmis := cache.Set(ctx.EffectiveChat.Id, tmi)
 
 			switch si.Status {
 			case ariaStatus.ACTIVE:
-				_, err := m.EditText(bot, tmi.FormatInfo(si.Gid), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+				_, err := m.EditText(bot, parse.Format(chatTmis), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
 				if err != nil {
 					log.Println(err)
 				}
@@ -53,7 +55,6 @@ func Mirror(ctx *ext.Context) error {
 					continue
 				}
 
-				_, _ = m.EditText(bot, fmt.Sprintf("Uploading %s", tmi.FileName), nil)
 				break DownloadLoop
 			case ariaStatus.REMOVED:
 				_, err := ctx.EffectiveMessage.Reply(ctx.Bot, "Download was cancelled", nil)
@@ -87,6 +88,15 @@ func Mirror(ctx *ext.Context) error {
 		}
 
 		st := aria.GetStatus(gid)
+		tmi := parse.TelegramMirrorInfo{}
+		tmi.ParseStatus(st)
+		chatTmis := cache.Set(ctx.EffectiveChat.Id, tmi)
+
+		_, err := m.EditText(bot, parse.Format(chatTmis), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+		if err != nil {
+			log.Println(err)
+		}
+
 		basePath := strings.Replace(st.Files[0].Path, fmt.Sprintf("%s/", st.Dir), "", 1)
 		//Concluding that it indeed is a file.
 		// Since we would have had something else as the result from
@@ -97,11 +107,18 @@ func Mirror(ctx *ext.Context) error {
 				_, err = m.EditText(bot, err.Error(), nil)
 			}
 
+			chatTmis = cache.Set(ctx.EffectiveChat.Id, parse.TelegramMirrorInfo{Status: "done"})
+			_, err = m.EditText(bot, parse.Format(chatTmis), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+			if err != nil {
+				log.Println(err)
+			}
+
 			parsedLink := parse.ConvertLinks(filepath.Base(st.Files[0].Path), dryve.ParseMediaToUsableFormat(*f), parse.BytesToHumanReadable(strconv.Itoa(int(f.Size))))
 			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
 			}
+
 
 
 			if err := os.Remove(st.Files[0].Path); err != nil {
@@ -115,6 +132,12 @@ func Mirror(ctx *ext.Context) error {
 
 			if err != nil {
 				_, _ = ctx.EffectiveMessage.Reply(ctx.Bot, err.Error(), nil)
+			}
+
+			chatTmis = cache.Set(ctx.EffectiveChat.Id, parse.TelegramMirrorInfo{Status: "done"})
+			_, err = m.EditText(bot, parse.Format(chatTmis), &gotgbot.EditMessageTextOpts{ParseMode: "html"})
+			if err != nil {
+				log.Println(err)
 			}
 
 			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true), parse.BytesToHumanReadable(strconv.Itoa(int(folder.Size))))
