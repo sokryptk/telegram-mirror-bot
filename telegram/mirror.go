@@ -128,7 +128,7 @@ func Mirror(ctx *ext.Context) error {
 			}
 
 		} else {
-			folderName := strings.Split(basePath, string(filepath.Separator))[1]
+			folderName := strings.Split(basePath, string(filepath.Separator))[0]
 			folderPath := fmt.Sprintf("%s%s%s", st.Dir, string(filepath.Separator), folderName)
 			folder, err := dryve.UploadFolder(folderPath)
 
