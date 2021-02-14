@@ -142,7 +142,7 @@ func Mirror(ctx *ext.Context) error {
 				log.Println(err)
 			}
 
-			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true), parse.BytesToHumanReadable(strconv.Itoa(int(folder.Size))))
+			parsedLink := parse.ConvertLinks(folderName, dryve.ParseMediaToUsableFormat(*folder, true))
 			_, err = m.EditText(bot, parsedLink, &gotgbot.EditMessageTextOpts{ParseMode: "HTML"})
 			if err != nil {
 				log.Println(err)
